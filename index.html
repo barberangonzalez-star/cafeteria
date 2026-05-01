@@ -82,6 +82,24 @@
     .nav-links a:hover {
       color: #b76e4b;
     }
+    
+    .phone-link {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      color: #2c2c2c;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .phone-link:hover {
+      color: #b76e4b;
+    }
+    .phone-icon {
+      font-size: 1.1rem;
+    }
+    
     .cart-icon {
       display: flex;
       align-items: center;
@@ -132,10 +150,21 @@
       letter-spacing: 0.3px;
       transition: all 0.25s;
       border: 1px solid #2c2c2c;
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
     }
     .btn:hover {
       background: #b76e4b;
       border-color: #b76e4b;
+    }
+    .btn-outline {
+      background: transparent;
+      color: #2c2c2c;
+      border: 1px solid #2c2c2c;
+    }
+    .btn-outline:hover {
+      background: #2c2c2c;
+      color: white;
     }
     .hero-image {
       flex: 1 1 380px;
@@ -291,6 +320,7 @@
     .footer-links {
       display: flex;
       gap: 2rem;
+      align-items: center;
     }
     .footer-links a {
       text-decoration: none;
@@ -299,6 +329,11 @@
     }
     .footer-links a:hover {
       color: #b76e4b;
+    }
+    
+    .footer-phone {
+      font-weight: 500;
+      color: #2c2c2c;
     }
 
     /* Contador carrito simple */
@@ -329,6 +364,12 @@
       .nav-links {
         gap: 1.5rem;
       }
+      .btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-right: 0;
+      }
     }
   </style>
 </head>
@@ -341,6 +382,9 @@
         <a href="#">inicio</a>
         <a href="#">menú</a>
         <a href="#">nosotros</a>
+        <a href="tel:+58414285660" class="phone-link">
+          <span class="phone-icon">📞</span> 0414-285660
+        </a>
         <button class="cart-icon" id="cart-toggle">
           🛒 <span id="cart-count">0</span>
         </button>
@@ -353,6 +397,7 @@
         <h1>Café de especialidad,<br>ritual minimalista.</h1>
         <p>Granos seleccionados de origen único, tostados con precisión. Disfrutá la claridad en cada taza.</p>
         <a href="#" class="btn">Explorar menú</a>
+        <a href="tel:+58414285660" class="btn btn-outline">📞 Llamar ahora</a>
       </div>
       <div class="hero-image"></div>
     </section>
@@ -417,7 +462,7 @@
       <div class="about-text">
         <h2>Menos es más.</h2>
         <p>Trabajamos con pequeños productores, respetando los procesos naturales. Nuestro espacio fue diseñado para que el café sea el protagonista.</p>
-        <a href="#" class="btn" style="background:transparent; color:#2c2c2c; border:1px solid #2c2c2c;">Conocé más</a>
+        <a href="tel:+58414285660" class="btn btn-outline">📞 Contáctanos: 0414-285660</a>
       </div>
       <div class="about-image"></div>
     </section>
@@ -429,6 +474,7 @@
         <a href="#">Instagram</a>
         <a href="#">Contacto</a>
         <a href="#">Tienda</a>
+        <a href="tel:+58414285660" class="footer-phone">📞 0414-285660</a>
       </div>
     </footer>
   </div>
@@ -448,6 +494,7 @@
         <span id="cart-total">$0.00</span>
       </div>
       <button style="width:100%; background:#2c2c2c; color:white; border:none; padding:0.9rem; border-radius:40px; font-weight:500; cursor:pointer;">Finalizar pedido</button>
+      <a href="tel:+58414285660" style="display: block; text-align: center; margin-top: 0.8rem; color: #b76e4b; text-decoration: none; font-size: 0.9rem;">📞 Ordenar por teléfono</a>
     </div>
   </div>
 
@@ -540,10 +587,6 @@
           });
         }
         updateCartUI();
-        // Mostrar panel brevemente (opcional)
-        if (cartPanel.style.right !== '0px') {
-          // solo actualiza, no abre automático para no molestar
-        }
       }
 
       // Event listeners para botones "Agregar"
@@ -581,7 +624,7 @@
 
       closeCartBtn.addEventListener('click', closeCart);
 
-      // Cerrar al hacer clic fuera (en backdrop improvisado)
+      // Cerrar al hacer clic fuera
       window.addEventListener('click', function(e) {
         if (!cartPanel.contains(e.target) && e.target !== cartToggle && !cartToggle.contains(e.target)) {
           if (cartPanel.style.right === '0px') {
