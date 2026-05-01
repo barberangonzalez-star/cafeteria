@@ -1,161 +1,935 @@
-<!-- Widget de Chat IA -->
-<div id="chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 999;">
-  <!-- Botón flotante -->
-  <button id="chat-toggle-btn" style="
-    width: 60px; height: 60px; 
-    background: #b76e4b; 
-    border: none; 
-    border-radius: 50%; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 24px;
-    transition: all 0.3s;
-  ">💬</button>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cafetería Espresso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <!-- Ventana del chat -->
-  <div id="chat-window" style="
-    display: none;
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    width: 350px;
-    height: 500px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    flex-direction: column;
-    overflow: hidden;
-  ">
-    <div style="background: #2c2c2c; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <span style="font-weight: 600;">Sofía - Asistente IA</span>
-        <div style="font-size: 12px; opacity: 0.8;">Cafetería Espresso</div>
+    :root {
+      --espresso:    #2c1a0e;
+      --caramel:     #b76e4b;
+      --cream:       #faf6f0;
+      --latte:       #e8ddd0;
+      --dark:        #1a1208;
+      --gold:        #c8973c;
+      --text:        #3d2b1a;
+      --muted:       #8a7060;
+      --white:       #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(250,246,240,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--latte);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--espresso);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--caramel); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--caramel); }
+    .nav-cta {
+      background: var(--espresso);
+      color: var(--white) !important;
+      padding: 10px 24px;
+      border-radius: 50px;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--caramel) !important; color: var(--white) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 100px 60px 60px;
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(183,110,75,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-text { animation: fadeUp 0.8s ease both; }
+    .hero-tag {
+      display: inline-block;
+      background: var(--latte);
+      color: var(--caramel);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 1.1;
+      color: var(--espresso);
+      margin-bottom: 24px;
+    }
+    .hero h1 em { color: var(--caramel); font-style: italic; }
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--caramel);
+      color: var(--white);
+      border: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--espresso); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--espresso);
+      border: 1.5px solid var(--latte);
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: var(--caramel); color: var(--caramel); }
+
+    .hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .hero-card {
+      background: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(44,26,14,0.15);
+      max-width: 420px;
+      width: 100%;
+    }
+    .hero-card-img {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, var(--espresso) 0%, #5c3217 60%, var(--caramel) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7rem;
+    }
+    .hero-card-body { padding: 28px; }
+    .hero-card-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--espresso);
+      margin-bottom: 8px;
+    }
+    .hero-card-body p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .hero-card-price {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--caramel);
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      background: var(--espresso);
+      color: var(--white);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      text-align: center;
+      padding: 60px;
+    }
+    .stat { padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      display: block;
+    }
+    .stat-label { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 6px; }
+
+    /* ── MENU ── */
+    .section { padding: 100px 60px; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-tag {
+      display: inline-block;
+      background: var(--latte);
+      color: var(--caramel);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--espresso);
+      line-height: 1.2;
+    }
+    .section-header p { color: var(--muted); max-width: 520px; margin: 16px auto 0; line-height: 1.7; }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    .menu-card {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(44,26,14,0.06);
+      transition: all 0.3s;
+    }
+    .menu-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(44,26,14,0.12); }
+    .menu-card-img {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    .menu-card-img.bg1 { background: linear-gradient(135deg, #3d1f0e, #7a3d1a); }
+    .menu-card-img.bg2 { background: linear-gradient(135deg, #1a2e1a, #3d5c2e); }
+    .menu-card-img.bg3 { background: linear-gradient(135deg, #2e1a2e, #5c3d5c); }
+    .menu-card-img.bg4 { background: linear-gradient(135deg, #2e2010, #7a5c28); }
+    .menu-card-img.bg5 { background: linear-gradient(135deg, #1a2040, #3d5c8a); }
+    .menu-card-img.bg6 { background: linear-gradient(135deg, #3d1a1a, #8a3d2e); }
+    .menu-card-body { padding: 24px; }
+    .menu-card-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--espresso);
+      margin-bottom: 8px;
+    }
+    .menu-card-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .menu-card-footer { display: flex; justify-content: space-between; align-items: center; }
+    .menu-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--caramel);
+    }
+    .menu-badge {
+      font-size: 0.75rem;
+      background: var(--latte);
+      color: var(--espresso);
+      padding: 4px 12px;
+      border-radius: 50px;
+    }
+
+    /* ── ABOUT ── */
+    .about {
+      background: var(--espresso);
+      color: var(--white);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      padding: 100px 60px;
+    }
+    .about-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 24px;
+      height: 400px;
+    }
+    .about-text .section-tag { background: rgba(255,255,255,0.1); color: var(--gold); }
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+    .about-text h2 em { color: var(--gold); font-style: italic; }
+    .about-text p { color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 20px; font-size: 0.98rem; }
+    .about-features { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .about-feat { display: flex; gap: 16px; align-items: flex-start; }
+    .about-feat-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+    .about-feat-text strong { display: block; font-weight: 500; margin-bottom: 4px; }
+    .about-feat-text span { font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+
+    /* ── HORARIOS ── */
+    .hours-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .hours-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(44,26,14,0.06);
+      border-top: 4px solid var(--caramel);
+    }
+    .hours-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--espresso);
+      margin-bottom: 16px;
+    }
+    .hours-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--latte); font-size: 0.9rem; }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row span:first-child { color: var(--muted); }
+    .hours-row span:last-child { font-weight: 500; color: var(--espresso); }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .contact-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(44,26,14,0.06);
+      transition: all 0.2s;
+    }
+    .contact-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(44,26,14,0.1); }
+    .contact-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+    .contact-card h3 { font-family: 'Playfair Display', serif; color: var(--espresso); margin-bottom: 8px; }
+    .contact-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .contact-card a { color: var(--caramel); text-decoration: none; font-weight: 500; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 40px 60px;
+      font-size: 0.88rem;
+    }
+    footer strong { color: var(--gold); font-family: 'Playfair Display', serif; }
+
+    /* ── CHAT WIDGET ── */
+    #chat-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    #chat-toggle-btn {
+      width: 62px; height: 62px;
+      background: var(--caramel);
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 6px 24px rgba(183,110,75,0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: all 0.3s;
+      margin-left: auto;
+    }
+    #chat-toggle-btn:hover { transform: scale(1.08); }
+
+    #chat-window {
+      display: none;
+      position: absolute;
+      bottom: 76px;
+      right: 0;
+      width: 360px;
+      height: 520px;
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 16px 50px rgba(44,26,14,0.2);
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--latte);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-header {
+      background: var(--espresso);
+      color: var(--white);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header-info { display: flex; align-items: center; gap: 12px; }
+    .chat-avatar {
+      width: 40px; height: 40px;
+      background: var(--caramel);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .chat-name { font-weight: 600; font-size: 0.95rem; }
+    .chat-status { font-size: 0.75rem; opacity: 0.7; margin-top: 2px; }
+    .chat-online-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: #4caf50;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    #close-chat {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    #close-chat:hover { color: var(--white); }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #faf9f6;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-thumb { background: var(--latte); border-radius: 4px; }
+
+    .msg {
+      padding: 10px 14px;
+      border-radius: 14px;
+      max-width: 80%;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      animation: msgIn 0.25s ease;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg-bot {
+      background: var(--white);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(44,26,14,0.06);
+      align-self: flex-start;
+    }
+    .msg-user {
+      background: var(--caramel);
+      color: var(--white);
+      border-bottom-right-radius: 4px;
+      align-self: flex-end;
+    }
+    .msg-typing {
+      background: var(--white);
+      color: var(--muted);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(44,26,14,0.06);
+      align-self: flex-start;
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+
+    .chat-input-area {
+      padding: 14px 16px;
+      border-top: 1px solid var(--latte);
+      display: flex;
+      gap: 10px;
+      background: var(--white);
+    }
+    #chat-input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1.5px solid var(--latte);
+      border-radius: 50px;
+      outline: none;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--cream);
+      transition: border-color 0.2s;
+    }
+    #chat-input:focus { border-color: var(--caramel); }
+    #send-btn {
+      background: var(--caramel);
+      color: var(--white);
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    #send-btn:hover { background: var(--espresso); transform: scale(1.05); }
+    #send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── ANIMACIONES ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 90px 24px 60px; gap: 40px; }
+      .hero-visual { order: -1; }
+      .stats { grid-template-columns: repeat(2, 1fr); padding: 40px 24px; }
+      .stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .section { padding: 70px 24px; }
+      .about { grid-template-columns: 1fr; padding: 70px 24px; gap: 40px; }
+      .about-visual { height: 220px; font-size: 6rem; }
+      footer { padding: 30px 24px; }
+      #chat-window { width: calc(100vw - 40px); right: -4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">☕ Cafetería <span>Espresso</span></div>
+    <ul class="nav-links">
+      <li><a href="#menu">Menú</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#horarios">Horarios</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="tel:04142856600" class="nav-cta">Llámanos</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <span class="hero-tag">☕ Desde 2015 · Caracas</span>
+      <h1>El café que<br/><em>mereces</em> cada<br/>mañana</h1>
+      <p class="hero-desc">
+        En Cafetería Espresso encontrarás el equilibrio perfecto entre aroma, sabor y atmósfera. 
+        Cada taza es una experiencia que hemos cuidado desde el grano hasta tu mesa.
+      </p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn-primary">Ver Menú</a>
+        <a href="#contacto" class="btn-outline">Visitarnos</a>
       </div>
-      <button id="close-chat" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
     </div>
-    
-    <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 15px; background: #faf9f6;">
-      <div style="background: #f0ece6; padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 80%;">
-        ¡Hola! Soy Sofía ☕ ¿En qué puedo ayudarte hoy?
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-img">☕</div>
+        <div class="hero-card-body">
+          <h3>Espresso Signature</h3>
+          <p>Blend especial de la casa, doble ristretto con leche vaporizada artesanal</p>
+          <div class="hero-card-price">Bs. 12.50</div>
+        </div>
       </div>
     </div>
-    
-    <div style="padding: 15px; border-top: 1px solid #e8e4df;">
-      <div style="display: flex; gap: 10px;">
-        <input 
-          type="text" 
-          id="chat-input" 
-          placeholder="Escribe tu mensaje..." 
-          style="flex: 1; padding: 10px; border: 1px solid #e0dcd5; border-radius: 20px; outline: none;"
-        >
-        <button id="send-btn" style="
-          background: #b76e4b; 
-          color: white; 
-          border: none; 
-          width: 40px; 
-          height: 40px; 
-          border-radius: 50%; 
-          cursor: pointer;
-        ">➤</button>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><span class="stat-num">+8K</span><div class="stat-label">Clientes satisfechos</div></div>
+    <div class="stat"><span class="stat-num">15+</span><div class="stat-label">Variedades de café</div></div>
+    <div class="stat"><span class="stat-num">10</span><div class="stat-label">Años de experiencia</div></div>
+    <div class="stat"><span class="stat-num">4.9★</span><div class="stat-label">Calificación promedio</div></div>
+  </div>
+
+  <!-- MENÚ -->
+  <section class="section" id="menu">
+    <div class="section-header">
+      <span class="section-tag">Nuestro Menú</span>
+      <h2>Bebidas artesanales<br/>para cada momento</h2>
+      <p>Preparadas con granos seleccionados y técnicas de barismo especializado</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card">
+        <div class="menu-card-img bg1">☕</div>
+        <div class="menu-card-body">
+          <h3>Espresso Clásico</h3>
+          <p>Intenso y concentrado, perfecto para empezar el día con energía pura.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">Bs. 6.00</span>
+            <span class="menu-badge">Bestseller</span>
+          </div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="menu-card-img bg4">🥛</div>
+        <div class="menu-card-body">
+          <h3>Cappuccino</h3>
+          <p>Espresso suave con espuma de leche cremosa y un toque de canela.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">Bs. 9.50</span>
+            <span class="menu-badge">Popular</span>
+          </div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="menu-card-img bg5">❄️</div>
+        <div class="menu-card-body">
+          <h3>Frappé de Caramelo</h3>
+          <p>Café frío batido con crema, caramelo artesanal y leche condensada.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">Bs. 14.00</span>
+            <span class="menu-badge">Especial</span>
+          </div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="menu-card-img bg2">🍃</div>
+        <div class="menu-card-body">
+          <h3>Matcha Latte</h3>
+          <p>Té matcha premium japonés con leche vaporizada al estilo barista.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">Bs. 11.00</span>
+            <span class="menu-badge">Nuevo</span>
+          </div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="menu-card-img bg3">🍫</div>
+        <div class="menu-card-body">
+          <h3>Mocha Intenso</h3>
+          <p>Espresso doble con chocolate belga, leche cremosa y nata montada.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">Bs. 13.00</span>
+            <span class="menu-badge">Favorito</span>
+          </div>
+        </div>
+      </div>
+      <div class="menu-card">
+        <div class="menu-card-img bg6">🧁</div>
+        <div class="menu-card-body">
+          <h3>Postres del Día</h3>
+          <p>Selección de tartas, croissants y pastelería fresca horneada a diario.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">Bs. 8.00</span>
+            <span class="menu-badge">Diario</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOSOTROS -->
+  <section class="about" id="nosotros">
+    <div class="about-visual">☕</div>
+    <div class="about-text">
+      <span class="section-tag">Nuestra Historia</span>
+      <h2>Pasión por el café<br/><em>desde el grano</em></h2>
+      <p>Desde 2015, Cafetería Espresso ha sido el rincón favorito de quienes aprecian el buen café. Comenzamos como un pequeño local familiar y hoy somos un referente del barismo artesanal en la ciudad.</p>
+      <p>Seleccionamos nuestros granos directamente de fincas locales, apoyando al productor venezolano y garantizando la trazabilidad de cada taza que servimos.</p>
+      <div class="about-features">
+        <div class="about-feat">
+          <span class="about-feat-icon">🌿</span>
+          <div class="about-feat-text">
+            <strong>Granos de origen local</strong>
+            <span>Selección directa de fincas venezolanas de altura</span>
+          </div>
+        </div>
+        <div class="about-feat">
+          <span class="about-feat-icon">🏆</span>
+          <div class="about-feat-text">
+            <strong>Baristas certificados</strong>
+            <span>Formación SCA y técnicas de especialidad internacionales</span>
+          </div>
+        </div>
+        <div class="about-feat">
+          <span class="about-feat-icon">❤️</span>
+          <div class="about-feat-text">
+            <strong>Ambiente acogedor</strong>
+            <span>Un espacio diseñado para conectar personas y momentos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HORARIOS -->
+  <section class="section" id="horarios">
+    <div class="section-header">
+      <span class="section-tag">Horarios</span>
+      <h2>Siempre listos<br/>para recibirte</h2>
+    </div>
+    <div class="hours-grid">
+      <div class="hours-card">
+        <h3>📅 Lunes a Viernes</h3>
+        <div class="hours-row"><span>Apertura</span><span>7:00 AM</span></div>
+        <div class="hours-row"><span>Cierre</span><span>8:00 PM</span></div>
+        <div class="hours-row"><span>Desayunos</span><span>7:00 – 11:00 AM</span></div>
+        <div class="hours-row"><span>Almuerzos</span><span>12:00 – 3:00 PM</span></div>
+      </div>
+      <div class="hours-card">
+        <h3>📅 Sábados</h3>
+        <div class="hours-row"><span>Apertura</span><span>8:00 AM</span></div>
+        <div class="hours-row"><span>Cierre</span><span>9:00 PM</span></div>
+        <div class="hours-row"><span>Brunch especial</span><span>8:00 – 12:00 PM</span></div>
+        <div class="hours-row"><span>Happy Hour</span><span>5:00 – 7:00 PM</span></div>
+      </div>
+      <div class="hours-card">
+        <h3>📅 Domingos</h3>
+        <div class="hours-row"><span>Apertura</span><span>9:00 AM</span></div>
+        <div class="hours-row"><span>Cierre</span><span>6:00 PM</span></div>
+        <div class="hours-row"><span>Desayuno dominical</span><span>9:00 – 1:00 PM</span></div>
+        <div class="hours-row"><span>Tarde de café</span><span>3:00 – 6:00 PM</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="section" id="contacto" style="background: var(--latte);">
+    <div class="section-header">
+      <span class="section-tag">Contáctanos</span>
+      <h2>Estamos aquí<br/>para ti</h2>
+      <p>Visítanos, llámanos o escríbenos. Sofía, nuestra asistente IA, también está disponible abajo 👇</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <span class="contact-icon">📞</span>
+        <h3>Teléfono</h3>
+        <p><a href="tel:04142856600">0414-285-6600</a></p>
+        <p style="margin-top:8px; font-size:0.82rem;">Lunes a Sábado · 7AM – 8PM</p>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">📍</span>
+        <h3>Ubicación</h3>
+        <p>Av. Principal, Local 4B<br/>Caracas, Venezuela</p>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">📱</span>
+        <h3>WhatsApp</h3>
+        <p><a href="https://wa.me/584142856600">+58 414-285-6600</a></p>
+        <p style="margin-top:8px; font-size:0.82rem;">Respuesta en menos de 1 hora</p>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">📸</span>
+        <h3>Instagram</h3>
+        <p><a href="https://instagram.com/cafeteriaespresso">@cafeteriaespresso</a></p>
+        <p style="margin-top:8px; font-size:0.82rem;">Síguenos para novedades y promos</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 <strong>Cafetería Espresso</strong> · Hecho con ☕ y amor en Venezuela</p>
+    <p style="margin-top:8px; font-size:0.8rem;">Asistente Sofía impulsada por Inteligencia Artificial</p>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       CHAT WIDGET — Sofía IA
+       Conectado directamente a Anthropic API
+       ══════════════════════════════════════ -->
+  <div id="chat-widget">
+    <button id="chat-toggle-btn" title="Chatear con Sofía">💬</button>
+
+    <div id="chat-window">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar">☕</div>
+          <div>
+            <div class="chat-name">Sofía</div>
+            <div class="chat-status"><span class="chat-online-dot"></span>Asistente IA · Cafetería Espresso</div>
+          </div>
+        </div>
+        <button id="close-chat">✕</button>
+      </div>
+
+      <div id="chat-messages">
+        <div class="msg msg-bot">¡Hola! Soy Sofía ☕ La asistente virtual de Cafetería Espresso. ¿En qué puedo ayudarte hoy?</div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." autocomplete="off"/>
+        <button id="send-btn">➤</button>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  // Chat Widget Script
-  const chatToggle = document.getElementById('chat-toggle-btn');
-  const chatWindow = document.getElementById('chat-window');
-  const closeBtn = document.getElementById('close-chat');
-  const sendBtn = document.getElementById('send-btn');
-  const chatInput = document.getElementById('chat-input');
-  const chatMessages = document.getElementById('chat-messages');
-  
-  let chatHistory = [];
-  let isOpen = false;
+  <script>
+    // ── Elementos ──
+    const chatToggle  = document.getElementById('chat-toggle-btn');
+    const chatWindow  = document.getElementById('chat-window');
+    const closeBtn    = document.getElementById('close-chat');
+    const sendBtn     = document.getElementById('send-btn');
+    const chatInput   = document.getElementById('chat-input');
+    const chatMessages= document.getElementById('chat-messages');
 
-  chatToggle.addEventListener('click', () => {
-    isOpen = !isOpen;
-    chatWindow.style.display = isOpen ? 'flex' : 'none';
-    chatToggle.textContent = isOpen ? '✕' : '💬';
-    chatToggle.style.background = isOpen ? '#2c2c2c' : '#b76e4b';
-  });
+    let isOpen = false;
+    let isLoading = false;
+    let chatHistory = [];
 
-  closeBtn.addEventListener('click', () => {
-    isOpen = false;
-    chatWindow.style.display = 'none';
-    chatToggle.textContent = '💬';
-    chatToggle.style.background = '#b76e4b';
-  });
+    // ── SYSTEM PROMPT ── personaliza aquí a Sofía
+    const SYSTEM_PROMPT = `Eres Sofía, la asistente virtual de Cafetería Espresso en Caracas, Venezuela. 
+Eres amable, cálida y experta en el menú y servicios de la cafetería.
 
-  async function sendMessage() {
-    const message = chatInput.value.trim();
-    if (!message) return;
+INFORMACIÓN DEL NEGOCIO:
+- Nombre: Cafetería Espresso
+- Teléfono: 0414-285-6600
+- Horario: Lunes-Viernes 7AM-8PM, Sábados 8AM-9PM, Domingos 9AM-6PM
+- Instagram: @cafeteriaespresso
 
-    // Agregar mensaje del usuario
-    addMessage(message, 'user');
-    chatInput.value = '';
+MENÚ PRINCIPAL (precios en Bs.):
+• Espresso Clásico: Bs. 6.00
+• Cappuccino: Bs. 9.50
+• Frappé de Caramelo: Bs. 14.00
+• Matcha Latte: Bs. 11.00
+• Mocha Intenso: Bs. 13.00
+• Postres del día: Bs. 8.00
+• Espresso Signature (doble ristretto): Bs. 12.50
 
-    // Mostrar indicador de escritura
-    const loadingDiv = document.createElement('div');
-    loadingDiv.textContent = 'Sofía está escribiendo...';
-    loadingDiv.style.cssText = 'color: #999; font-size: 0.9rem; padding: 5px;';
-    chatMessages.appendChild(loadingDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+REGLAS:
+- Responde siempre en español, de forma breve y amigable
+- Si no sabes algo, ofrece el teléfono: 0414-285-6600
+- Usa emojis con moderación (1-2 por mensaje máximo)
+- No inventas información que no tienes`;
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message,
-          history: chatHistory 
-        })
-      });
+    // ── Toggle chat ──
+    chatToggle.addEventListener('click', () => {
+      isOpen = !isOpen;
+      chatWindow.style.display = isOpen ? 'flex' : 'none';
+      chatToggle.textContent = isOpen ? '✕' : '💬';
+      chatToggle.style.background = isOpen ? '#2c1a0e' : '#b76e4b';
+      if (isOpen) chatInput.focus();
+    });
 
-      const data = await response.json();
-      
-      // Remover indicador de carga
-      loadingDiv.remove();
-      
-      // Agregar respuesta
-      addMessage(data.reply, 'assistant');
-      
-      // Actualizar historial
-      chatHistory.push(
-        { role: 'user', content: message },
-        { role: 'assistant', content: data.reply }
-      );
-      
-    } catch (error) {
-      loadingDiv.remove();
-      addMessage('Lo siento, no puedo responder ahora. Llámanos al 0414-285660 ☕', 'assistant');
+    closeBtn.addEventListener('click', () => {
+      isOpen = false;
+      chatWindow.style.display = 'none';
+      chatToggle.textContent = '💬';
+      chatToggle.style.background = '#b76e4b';
+    });
+
+    // ── Agregar mensaje al chat ──
+    function addMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = `msg ${type === 'user' ? 'msg-user' : type === 'typing' ? 'msg-typing' : 'msg-bot'}`;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div;
     }
-  }
 
-  function addMessage(text, sender) {
-    const messageDiv = document.createElement('div');
-    messageDiv.textContent = text;
-    messageDiv.style.cssText = `
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-      ${sender === 'user' 
-        ? 'background: #b76e4b; color: white; margin-left: auto;' 
-        : 'background: #f0ece6; color: #2c2c2c;'
+    // ── Enviar mensaje ──
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text || isLoading) return;
+
+      isLoading = true;
+      sendBtn.disabled = true;
+      chatInput.value = '';
+
+      addMessage(text, 'user');
+
+      const typingDiv = addMessage('Sofía está escribiendo...', 'typing');
+
+      // Actualizar historial
+      chatHistory.push({ role: 'user', content: text });
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            history: chatHistory.slice(0, -1) // sin el último que acabamos de push
+          })
+        });
+
+        const data = await response.json();
+        typingDiv.remove();
+
+        if (data.reply) {
+          addMessage(data.reply, 'bot');
+          chatHistory.push({ role: 'assistant', content: data.reply });
+        } else {
+          addMessage('⚠️ Error al responder. Llámanos al 0414-285-6600 ☕', 'bot');
+          chatHistory.pop();
+        }
+
+      } catch (err) {
+        typingDiv.remove();
+        addMessage('Lo siento, no puedo responder ahora. Llámanos al 0414-285-6600 ☕', 'bot');
+        chatHistory.pop();
+      } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+        chatInput.focus();
       }
-    `;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
+    }
 
-  sendBtn.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-  });
-</script>
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) sendMessage();
+    });
+  </script>
+
+</body>
+</html>
