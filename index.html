@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>espresso | cafetería de especialidad</title>
+  <!-- Fuentes modernas y minimalistas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <!-- Estilos embebidos -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #faf9f6;
+      font-family: 'Inter', sans-serif;
+      color: #2c2c2c;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Tipografía */
+    h1, h2, h3, .serif {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #1e1e1e;
+      font-weight: 600;
+    }
+
+    /* Navegación minimalista */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.8rem 0;
+      background-color: transparent;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2c2c2c;
+      letter-spacing: -0.5px;
+    }
+    .logo span {
+      font-weight: 500;
+      font-style: italic;
+      color: #b76e4b;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.8rem;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #383838;
+      font-weight: 400;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+      letter-spacing: 0.2px;
+    }
+    .nav-links a:hover {
+      color: #b76e4b;
+    }
+    .cart-icon {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #2c2c2c;
+      font-weight: 500;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3rem;
+      padding: 2rem 0 5rem;
+      border-bottom: 1px solid #e8e4df;
+    }
+    .hero-text {
+      flex: 1 1 400px;
+    }
+    .hero-text h1 {
+      font-size: 3.8rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      color: #1e1e1e;
+    }
+    .hero-text p {
+      font-size: 1.1rem;
+      color: #4a4a4a;
+      margin-bottom: 2.2rem;
+      max-width: 450px;
+      font-weight: 300;
+    }
+    .btn {
+      display: inline-block;
+      background: #2c2c2c;
+      color: white;
+      padding: 0.9rem 2.4rem;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+      transition: all 0.25s;
+      border: 1px solid #2c2c2c;
+    }
+    .btn:hover {
+      background: #b76e4b;
+      border-color: #b76e4b;
+    }
+    .hero-image {
+      flex: 1 1 380px;
+      background: #e6dfd7;
+      border-radius: 24px;
+      height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="45" r="18" fill="%23b76e4b" opacity="0.9"/><rect x="38" y="55" width="24" height="18" rx="5" fill="%232c2c2c"/><rect x="30" y="40" width="8" height="15" rx="3" fill="%23d9c8b2"/></svg>');
+      background-size: 150px 150px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #f3ede7;
+    }
+
+    /* Sección productos (ecommerce) */
+    .products-section {
+      padding: 5rem 0 4rem;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2.2rem;
+    }
+    .product-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border: 1px solid #f0ece6;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 30px -12px rgba(0,0,0,0.08);
+    }
+    .product-img {
+      width: 100%;
+      height: 180px;
+      background-color: #f3ede7;
+      border-radius: 14px;
+      margin-bottom: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+    }
+    /* fondos simulados para cada producto */
+    .img-espresso {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="%234d2c1d" opacity="0.9"/><circle cx="45" cy="42" r="5" fill="%23e6c9a8"/></svg>');
+      background-color: #e3d7cb;
+    }
+    .img-latte {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="22" ry="18" fill="%23a6785c"/><circle cx="50" cy="38" r="12" fill="%23f5e7d3"/></svg>');
+      background-color: #dacbbc;
+    }
+    .img-mocha {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="48" r="20" fill="%233b2b22"/><rect x="44" y="58" width="12" height="16" fill="%23d9b382" rx="4"/></svg>');
+      background-color: #cfbcab;
+    }
+    .img-frio {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="30" y="30" width="40" height="55" rx="14" fill="%23b76e4b" opacity="0.8"/><rect x="35" y="40" width="30" height="4" fill="%23fff" opacity="0.6"/></svg>');
+      background-color: #e8d9cc;
+    }
+
+    .product-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .product-desc {
+      font-size: 0.9rem;
+      color: #5e5e5e;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    .price-cart {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+    .price {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #1e1e1e;
+    }
+    .add-btn {
+      background: transparent;
+      border: 1px solid #ccc5ba;
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #2c2c2c;
+      background: white;
+    }
+    .add-btn:hover {
+      background: #2c2c2c;
+      color: white;
+      border-color: #2c2c2c;
+    }
+
+    /* Sección sobre nosotros / valores */
+    .about {
+      padding: 4rem 0 5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      align-items: center;
+      border-top: 1px solid #e8e4df;
+    }
+    .about-text {
+      flex: 1 1 300px;
+    }
+    .about-text h2 {
+      margin-bottom: 1.2rem;
+    }
+    .about-text p {
+      color: #4a4a4a;
+      font-weight: 300;
+      margin-bottom: 1.8rem;
+    }
+    .about-image {
+      flex: 1 1 300px;
+      background: #e7dfd5;
+      height: 280px;
+      border-radius: 24px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 60 L35 30 L55 32 L78 28 L90 48 L70 70 L30 72 Z" fill="%23b19470" opacity="0.6"/><circle cx="40" cy="55" r="8" fill="%235c4332"/></svg>');
+      background-size: 140px 140px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #f0e9e0;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2.5rem 0;
+      border-top: 1px solid #e8e4df;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      color: #5e5e5e;
+      font-size: 0.9rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      text-decoration: none;
+      color: #5e5e5e;
+      font-weight: 400;
+    }
+    .footer-links a:hover {
+      color: #b76e4b;
+    }
+
+    /* Contador carrito simple */
+    #cart-count {
+      background: #b76e4b;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+      .hero-text h1 {
+        font-size: 2.8rem;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+      .nav-links {
+        gap: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navegación -->
+    <nav>
+      <div class="logo">espresso<span>.</span></div>
+      <div class="nav-links">
+        <a href="#">inicio</a>
+        <a href="#">menú</a>
+        <a href="#">nosotros</a>
+        <button class="cart-icon" id="cart-toggle">
+          🛒 <span id="cart-count">0</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Café de especialidad,<br>ritual minimalista.</h1>
+        <p>Granos seleccionados de origen único, tostados con precisión. Disfrutá la claridad en cada taza.</p>
+        <a href="#" class="btn">Explorar menú</a>
+      </div>
+      <div class="hero-image"></div>
+    </section>
+
+    <!-- Productos / ecommerce -->
+    <section class="products-section">
+      <h2>Nuestros esenciales</h2>
+      <div class="product-grid" id="product-grid">
+        <!-- Producto 1 -->
+        <div class="product-card" data-id="1" data-name="Espresso simple" data-price="3.50">
+          <div class="product-img img-espresso"></div>
+          <div class="product-info">
+            <h3>Espresso</h3>
+            <p class="product-desc">Intenso, cuerpo sedoso. Notas a chocolate oscuro.</p>
+            <div class="price-cart">
+              <span class="price">$3.50</span>
+              <button class="add-btn">Agregar</button>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 2 -->
+        <div class="product-card" data-id="2" data-name="Latte cremoso" data-price="4.80">
+          <div class="product-img img-latte"></div>
+          <div class="product-info">
+            <h3>Latte</h3>
+            <p class="product-desc">Leche vaporizada, espresso balanceado.</p>
+            <div class="price-cart">
+              <span class="price">$4.80</span>
+              <button class="add-btn">Agregar</button>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 3 -->
+        <div class="product-card" data-id="3" data-name="Mocha artesanal" data-price="5.20">
+          <div class="product-img img-mocha"></div>
+          <div class="product-info">
+            <h3>Mocha</h3>
+            <p class="product-desc">Chocolate belga & espresso. Puro placer.</p>
+            <div class="price-cart">
+              <span class="price">$5.20</span>
+              <button class="add-btn">Agregar</button>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 4 -->
+        <div class="product-card" data-id="4" data-name="Cold Brew" data-price="4.50">
+          <div class="product-img img-frio"></div>
+          <div class="product-info">
+            <h3>Cold Brew</h3>
+            <p class="product-desc">Extracción en frío, suave y refrescante.</p>
+            <div class="price-cart">
+              <span class="price">$4.50</span>
+              <button class="add-btn">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sobre la cafetería -->
+    <section class="about">
+      <div class="about-text">
+        <h2>Menos es más.</h2>
+        <p>Trabajamos con pequeños productores, respetando los procesos naturales. Nuestro espacio fue diseñado para que el café sea el protagonista.</p>
+        <a href="#" class="btn" style="background:transparent; color:#2c2c2c; border:1px solid #2c2c2c;">Conocé más</a>
+      </div>
+      <div class="about-image"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div>© 2025 espresso. — minimalismo en cada sorbo</div>
+      <div class="footer-links">
+        <a href="#">Instagram</a>
+        <a href="#">Contacto</a>
+        <a href="#">Tienda</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Carrito lateral simple (oculto/mostrado) -->
+  <div id="cart-panel" style="position: fixed; top: 0; right: -360px; width: 340px; height: 100vh; background: white; box-shadow: -8px 0 25px rgba(0,0,0,0.06); transition: right 0.35s ease; z-index: 1000; padding: 2rem 1.8rem; display: flex; flex-direction: column; border-left: 1px solid #ede7df;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.6rem;">Tu pedido</h3>
+      <button id="close-cart" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #2c2c2c;">&times;</button>
+    </div>
+    <div id="cart-items" style="flex:1; overflow-y: auto; font-size: 0.95rem; color: #3a3a3a;">
+      <p style="color: #9a9a9a;">No hay productos aún.</p>
+    </div>
+    <div style="border-top: 1px solid #e8e4df; padding-top: 1.2rem; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 1rem;">
+        <span>Total</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <button style="width:100%; background:#2c2c2c; color:white; border:none; padding:0.9rem; border-radius:40px; font-weight:500; cursor:pointer;">Finalizar pedido</button>
+    </div>
+  </div>
+
+  <!-- Script para funcionalidad ecommerce -->
+  <script>
+    (function() {
+      // Estado del carrito
+      let cart = [];
+
+      // Elementos del DOM
+      const cartCountSpan = document.getElementById('cart-count');
+      const cartPanel = document.getElementById('cart-panel');
+      const cartItemsDiv = document.getElementById('cart-items');
+      const cartTotalSpan = document.getElementById('cart-total');
+      const closeCartBtn = document.getElementById('close-cart');
+      const cartToggle = document.getElementById('cart-toggle');
+      const productGrid = document.getElementById('product-grid');
+
+      // Actualizar interfaz del carrito
+      function updateCartUI() {
+        // Actualizar contador
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountSpan.textContent = totalItems;
+
+        // Actualizar panel lateral
+        if (cart.length === 0) {
+          cartItemsDiv.innerHTML = '<p style="color: #9a9a9a;">No hay productos aún.</p>';
+          cartTotalSpan.textContent = '$0.00';
+          return;
+        }
+
+        let html = '';
+        let total = 0;
+        cart.forEach(item => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+          html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.9rem; border-bottom: 1px solid #f5f0ea; padding-bottom: 0.7rem;">
+              <div>
+                <span style="font-weight: 500;">${item.name}</span>
+                <span style="color: #6b6b6b; font-size: 0.8rem; display: block;">$${item.price.toFixed(2)} c/u</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button class="qty-btn" data-action="decrease" data-id="${item.id}" style="background:#f0ece6; border:none; border-radius:50%; width:26px; height:26px; cursor:pointer; font-weight:bold;">−</button>
+                <span>${item.quantity}</span>
+                <button class="qty-btn" data-action="increase" data-id="${item.id}" style="background:#f0ece6; border:none; border-radius:50%; width:26px; height:26px; cursor:pointer; font-weight:bold;">+</button>
+              </div>
+            </div>
+          `;
+        });
+
+        cartItemsDiv.innerHTML = html;
+        cartTotalSpan.textContent = `$${total.toFixed(2)}`;
+
+        // Agregar event listeners a los botones de cantidad dentro del carrito
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            const id = parseInt(this.dataset.id);
+            const action = this.dataset.action;
+            if (action === 'increase') {
+              const existing = cart.find(item => item.id === id);
+              if (existing) {
+                existing.quantity += 1;
+              }
+            } else if (action === 'decrease') {
+              const existing = cart.find(item => item.id === id);
+              if (existing) {
+                existing.quantity -= 1;
+                if (existing.quantity <= 0) {
+                  cart = cart.filter(item => item.id !== id);
+                }
+              }
+            }
+            updateCartUI();
+          });
+        });
+      }
+
+      // Agregar producto al carrito
+      function addToCart(id, name, price) {
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push({
+            id: id,
+            name: name,
+            price: price,
+            quantity: 1
+          });
+        }
+        updateCartUI();
+        // Mostrar panel brevemente (opcional)
+        if (cartPanel.style.right !== '0px') {
+          // solo actualiza, no abre automático para no molestar
+        }
+      }
+
+      // Event listeners para botones "Agregar"
+      if (productGrid) {
+        productGrid.addEventListener('click', function(e) {
+          if (e.target.classList.contains('add-btn')) {
+            const card = e.target.closest('.product-card');
+            if (!card) return;
+            const id = parseInt(card.dataset.id);
+            const name = card.dataset.name;
+            const price = parseFloat(card.dataset.price);
+            if (!isNaN(id) && name && !isNaN(price)) {
+              addToCart(id, name, price);
+            }
+          }
+        });
+      }
+
+      // Abrir/cerrar carrito
+      function openCart() {
+        cartPanel.style.right = '0px';
+      }
+      function closeCart() {
+        cartPanel.style.right = '-360px';
+      }
+
+      cartToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (cartPanel.style.right === '0px') {
+          closeCart();
+        } else {
+          openCart();
+        }
+      });
+
+      closeCartBtn.addEventListener('click', closeCart);
+
+      // Cerrar al hacer clic fuera (en backdrop improvisado)
+      window.addEventListener('click', function(e) {
+        if (!cartPanel.contains(e.target) && e.target !== cartToggle && !cartToggle.contains(e.target)) {
+          if (cartPanel.style.right === '0px') {
+            closeCart();
+          }
+        }
+      });
+
+      // Inicializar UI
+      updateCartUI();
+    })();
+  </script>
+</body>
+</html>
